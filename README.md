@@ -1,8 +1,8 @@
 # 🎓 Trusted Grading Oracle: Blockchain-Based Academic Verification
 
-![Project Banner](assets/banner-placeholder.png)
+![Project Banner](./src/assets/banner-placeholder.png)
 **Status:** Phase 2 Complete (MVP Deployed on Sepolia Testnet)  
-**Author:** [Your Name]  
+**Author:** Nithika Perera 
 **Institution:** SLIIT (BSc Hons in Information Technology - Software Engineering)  
 **Research Component:** Seamless LMS Integration
 
