@@ -9,7 +9,7 @@
 ---
 
 ## 📺 Demo Preview
-![Application Demo](./src/assets/demo.gif)
+![Application Demo](./src//assets/demo.gif)
 *Figure 1: Real-time interaction between the React Frontend and the Sepolia Blockchain.*
 
 ---
