@@ -27,7 +27,7 @@ The **Trusted Grading Oracle** is a Decentralized Application (DApp) that moves 
 ## 🧩 My Research Component: Seamless LMS Integration
 This project is part of a 4-member research group. My specific contribution focuses on the **Middleware Bridge** that connects standard Web2 Learning Management Systems (like Moodle/Canvas) to the Web3 Blockchain, ensuring seamless user experience without requiring lecturers to understand crypto-wallets.
 
-![LMS Integration Logic](./src/assets/my-component.jpg.png)
+![LMS Integration Logic](./src/assets/my-component.png)
 *Figure 2: The logic flow for the Seamless LMS Integration module.*
 
 ---
