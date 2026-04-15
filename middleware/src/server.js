@@ -1,41 +1,68 @@
-const express = require("express");
-const cors = require("cors");
-const multer = require("multer");
+const express = require('express');
+const cors = require('cors');
+const multer = require('multer');
+const fs = require('fs');
+const path = require('path');
 
-const app = express()
+// Import our custom middleware engines
+const { parseExcelToJson } = require('./extraction/parser');
+const { generateProvenanceHash } = require('./hashing/hasher');
+
+const app = express();
 const port = 5000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Set up multer to store uploaded files in memory temporarily 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// API route: Receive Excel File from React Frontend
+// Path to our simulated Private Ledger
+const ledgerPath = path.join(__dirname, '../private_ledger/database.json');
+
 app.post('/api/ingest', upload.single('gradingSheet'), async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).json({ error: 'No File Uploaded' });
-        }
+        if (!req.file) return res.status(400).json({ error: 'No file uploaded.' });
 
-        console.log(`Received File: ${req.file.originalname}`);
+        console.log(`\n📥 1. Received file: ${req.file.originalname}`);
 
-        // TODO 1: Pass req.file.buffer to the Dynamic Data Parser (SheetJS)
-        // TODO 2: Pass the extracted JSON to the Integrity Hashing Engine (SHA-256)
-        // TODO 3: Save the hashed payload to private_ledger/database.json
+        // --- STAGE 1: EXTRACTION ---
+        console.log(`⚙️  2. Extracting and standardizing schema...`);
+        const standardizedJson = parseExcelToJson(req.file.buffer);
 
+        // --- STAGE 2: HASHING ---
+        console.log(`🔒 3. Generating SHA-256 Provenance Hash...`);
+        const sealedRecord = generateProvenanceHash(standardizedJson);
+
+        // --- STAGE 3: STORAGE (Private Ledger) ---
+        console.log(`💾 4. Saving to Private Ledger...`);
+
+        // Read the existing ledger
+        const rawLedger = fs.readFileSync(ledgerPath);
+        const ledger = JSON.parse(rawLedger);
+
+        // Add the new sealed record
+        ledger.push(sealedRecord);
+
+        // Save it back to the file
+        fs.writeFileSync(ledgerPath, JSON.stringify(ledger, null, 2));
+
+        console.log(`✅ Success! Provenance Hash: ${sealedRecord.provenanceHash}\n`);
+
+        // Send the real hash back to React!
         res.status(200).json({
-            message: 'File successfully received by Silent Bridge Middleware!',
-            fileName: req.file.originalname
+            message: 'Extraction and Hashing successful!',
+            fileName: req.file.originalname,
+            recordCount: sealedRecord.recordCount,
+            provenanceHash: sealedRecord.provenanceHash
         });
+
     } catch (error) {
-        console.error('Ingestion Error:', error);
+        console.error('❌ Ingestion Error:', error);
         res.status(500).json({ error: 'Internal Server Error during ingestion' });
     }
 });
 
 app.listen(port, () => {
-    console.log(`Silent Bridge Middleware running on http://localhost:${port}`);
+    console.log(`🚀 Silent Bridge Middleware running on http://localhost:${port}`);
 });
