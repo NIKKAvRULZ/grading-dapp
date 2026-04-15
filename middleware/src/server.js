@@ -18,7 +18,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // Path to our simulated Private Ledger
-const ledgerPath = path.join(__dirname, '../private_ledger/database.json');
+const ledgerPath = path.join(__dirname, '../../private_ledger/database.json');
 
 app.post('/api/ingest', upload.single('gradingSheet'), async (req, res) => {
     try {

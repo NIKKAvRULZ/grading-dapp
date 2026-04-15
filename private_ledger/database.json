@@ -1,0 +1,98 @@
+[
+  {
+    "timestamp": "2026-04-15T18:43:30.483Z",
+    "provenanceHash": "b6f53182848364b66c227215ccf589632d4f1826f307a1d2efc42a22ad300e36",
+    "recordCount": 5,
+    "data": [
+      {
+        "candidateId": "IT22061348",
+        "finalGrade": "A+",
+        "extractedAt": "2026-04-15T18:43:30.481Z"
+      },
+      {
+        "candidateId": "IT22111210",
+        "finalGrade": "A",
+        "extractedAt": "2026-04-15T18:43:30.482Z"
+      },
+      {
+        "candidateId": "IT22206282",
+        "finalGrade": "B+",
+        "extractedAt": "2026-04-15T18:43:30.482Z"
+      },
+      {
+        "candidateId": "IT22276346",
+        "finalGrade": "A-",
+        "extractedAt": "2026-04-15T18:43:30.482Z"
+      },
+      {
+        "candidateId": "IT24000000",
+        "finalGrade": "C+",
+        "extractedAt": "2026-04-15T18:43:30.482Z"
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-04-15T18:53:09.139Z",
+    "provenanceHash": "eaa00b4a9b4a8f7ebeee1ab505506f943527a374b34a25a0192c4bc93a914013",
+    "recordCount": 5,
+    "data": [
+      {
+        "candidateId": "IT22061348",
+        "finalGrade": "A+",
+        "extractedAt": "2026-04-15T18:53:09.138Z"
+      },
+      {
+        "candidateId": "IT22111210",
+        "finalGrade": "A",
+        "extractedAt": "2026-04-15T18:53:09.138Z"
+      },
+      {
+        "candidateId": "IT22206282",
+        "finalGrade": "B+",
+        "extractedAt": "2026-04-15T18:53:09.138Z"
+      },
+      {
+        "candidateId": "IT22276346",
+        "finalGrade": "A-",
+        "extractedAt": "2026-04-15T18:53:09.138Z"
+      },
+      {
+        "candidateId": "IT24000000",
+        "finalGrade": "C+",
+        "extractedAt": "2026-04-15T18:53:09.138Z"
+      }
+    ]
+  },
+  {
+    "timestamp": "2026-04-15T18:59:18.468Z",
+    "provenanceHash": "b90da66c0f3fe77187e1748f98edba55e3885df0dd17333f460d92412b8c4fd0",
+    "recordCount": 5,
+    "data": [
+      {
+        "candidateId": "IT22061348",
+        "finalGrade": "A+",
+        "extractedAt": "2026-04-15T18:59:18.468Z"
+      },
+      {
+        "candidateId": "IT22111210",
+        "finalGrade": "A",
+        "extractedAt": "2026-04-15T18:59:18.468Z"
+      },
+      {
+        "candidateId": "IT22206282",
+        "finalGrade": "B+",
+        "extractedAt": "2026-04-15T18:59:18.468Z"
+      },
+      {
+        "candidateId": "IT22276346",
+        "finalGrade": "A-",
+        "extractedAt": "2026-04-15T18:59:18.468Z"
+      },
+      {
+        "candidateId": "IT24000000",
+        "finalGrade": "C+",
+        "extractedAt": "2026-04-15T18:59:18.468Z"
+      }
+    ]
+  }
+]

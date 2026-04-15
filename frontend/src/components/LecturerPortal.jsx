@@ -1,14 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
-import './LecturerPortal.css'; // We will add some sleek styles next!
+import './LecturerPortal.css';
 
-const LecturerPortal = () => {
+const LecturerPortal = ({ user, onLogout }) => {
     const [selectedFile, setSelectedFile] = useState(null);
-    const [uploadStatus, setUploadStatus] = useState(''); // 'idle', 'uploading', 'success', 'error'
+    const [uploadStatus, setUploadStatus] = useState('');
     const [receipt, setReceipt] = useState(null);
 
-    // Handle file drop
     const onDrop = useCallback((acceptedFiles) => {
         if (acceptedFiles && acceptedFiles.length > 0) {
             setSelectedFile(acceptedFiles[0]);
@@ -26,28 +25,19 @@ const LecturerPortal = () => {
         maxFiles: 1
     });
 
-    // Handle sending the file to the backend
     const handleUpload = async () => {
         if (!selectedFile) return;
-
         setUploadStatus('uploading');
 
-        // We use FormData to send files via HTTP
         const formData = new FormData();
         formData.append('gradingSheet', selectedFile);
 
         try {
-            // Pointing to the Node.js backend we will build next
             const response = await axios.post('http://localhost:5000/api/ingest', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
+                headers: { 'Content-Type': 'multipart/form-data' },
             });
-
             setUploadStatus('success');
-            // Set the receipt data returned from the backend (hash, etc.)
             setReceipt(response.data);
-
         } catch (error) {
             console.error('Upload failed:', error);
             setUploadStatus('error');
@@ -55,59 +45,77 @@ const LecturerPortal = () => {
     };
 
     return (
-        <div className="portal-container">
-            <div className="portal-header">
-                <h2>Lecturer Data Upload Portal</h2>
-                <p>Securely ingest and standardise legacy LMS grading exports.</p>
-            </div>
-
-            <div
-                {...getRootProps()}
-                className={`dropzone ${isDragActive ? 'drag-active' : ''}`}
-            >
-                <input {...getInputProps()} />
-                <div className="dropzone-content">
-                    <span className="upload-icon">☁️</span>
-                    {isDragActive ? (
-                        <p>Drop the grading sheet here...</p>
-                    ) : (
-                        <p>Drag & drop your <b>.xlsx</b> or <b>.csv</b> file here, or click to browse</p>
-                    )}
+        <div className="portal-wrapper">
+            <nav className="top-nav">
+                <div className="nav-logo">SLIIT Grading Oracle</div>
+                <div className="nav-user">
+                    <div className="user-info">
+                        <span className="user-name">{user.name}</span>
+                        <span className="user-role">{user.role} • {user.faculty}</span>
+                    </div>
+                    <button className="logout-btn" onClick={onLogout}>Logout</button>
                 </div>
-            </div>
+            </nav>
 
-            {selectedFile && (
-                <div className="file-details">
-                    <p>Selected file: <strong>{selectedFile.name}</strong></p>
-                    <button
-                        className="upload-btn"
-                        onClick={handleUpload}
-                        disabled={uploadStatus === 'uploading'}
-                    >
-                        {uploadStatus === 'uploading' ? 'Processing & Securing...' : 'Verify Module & Upload'}
-                    </button>
+            <div className="portal-container">
+                <div className="portal-header">
+                    <h2>Secure Data Ingestion</h2>
+                    <p>
+                        Scale-ready academic records management. Upload your grading sheets to mathematically 
+                        seal records via the Silent Bridge decentralized middleware.
+                    </p>
                 </div>
-            )}
 
-            {uploadStatus === 'error' && (
-                <div className="alert error">
-                    Failed to upload or parse the file. Please try again.
-                </div>
-            )}
-
-            {uploadStatus === 'success' && receipt && (
-                <div className="receipt-card">
-                    <h3>✅ Cryptographic Provenance Sealed</h3>
-                    <p>Your grading data has been parsed and secured in the Private Ledger.</p>
-                    <div className="hash-box">
-                        <small>Provenance Hash (SHA-256):</small>
-                        <br />
-                        <code>{receipt.provenanceHash || 'Backend hash will appear here...'}</code>
+                <div {...getRootProps()} className={`dropzone ${isDragActive ? 'drag-active' : ''}`}>
+                    <input {...getInputProps()} />
+                    <div className="dropzone-content">
+                        <span className="upload-icon">💠</span>
+                        {isDragActive ? (
+                            <p>Release to secure the file...</p>
+                        ) : (
+                            <>
+                                <p>Select or drag grading sheet</p>
+                                <span>Supports .xlsx and .csv files</span>
+                            </>
+                        )}
                     </div>
                 </div>
-            )}
+
+                {selectedFile && (
+                    <div className="file-details">
+                        <div className="file-info">
+                            <span className="file-icon">📄</span>
+                            <span className="file-name">{selectedFile.name}</span>
+                        </div>
+                        <button
+                            className="upload-btn"
+                            onClick={handleUpload}
+                            disabled={uploadStatus === 'uploading'}
+                        >
+                            {uploadStatus === 'uploading' ? 'Sealing Data...' : 'Verify & Seal Record'}
+                        </button>
+                    </div>
+                )}
+
+                {uploadStatus === 'error' && (
+                    <div className="alert error">
+                        ⚠️ Connection failure. Decentralized middleware at port 5000 is unreachable.
+                    </div>
+                )}
+
+                {uploadStatus === 'success' && receipt && (
+                    <div className="receipt-card">
+                        <h3>✅ Cryptographically Secured</h3>
+                        <p><strong>{receipt.recordCount} entries</strong> have been parsed, validated, and permanently sealed in the private ledger.</p>
+                        <div className="hash-box">
+                            <small>SHA-256 Provenance Hash</small>
+                            <code>{receipt.provenanceHash}</code>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 };
 
-export default LecturerPortal;
+export default LecturerPortal;
