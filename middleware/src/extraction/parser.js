@@ -2,31 +2,41 @@ const XLSX = require('xlsx');
 
 const parseExcelToJson = (fileBuffer) => {
     try {
-        // 1. Read the raw file buffer sent from React
         const workbook = XLSX.read(fileBuffer, { type: 'buffer' });
-
-        // 2. Grab the first sheet in the Excel file
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
-
-        // 3. Convert that sheet into a raw JSON array
         const rawJson = XLSX.utils.sheet_to_json(worksheet);
 
-        // 4. Dynamic Schema Standardization
-        // We map over the messy data and force it into our clean format
         const standardizedData = rawJson.map(row => {
             const keys = Object.keys(row);
-
-            // Hunt for the ID column (e.g., "Student ID", "CandidateID", "IT Number")
+            
+            // 1. Find the primary Identifier column
             const studentIdKey = keys.find(key => key.toLowerCase().includes('id') || key.toLowerCase().includes('student'));
+            
+            // 2. Define PII keywords to explicitly strip out for Zero-Knowledge privacy
+            const piiKeywords = ['name', 'first', 'last', 'email'];
+            
+            // 3. Dynamically harvest ALL remaining columns (Assignments, Labs, Finals)
+            const extractedGrades = {};
+            keys.forEach(key => {
+                if (key !== studentIdKey) {
+                    const isPII = piiKeywords.some(pii => key.toLowerCase().includes(pii));
+                    if (!isPII) {
+                        extractedGrades[key] = String(row[key]); // Capture the mark
+                    }
+                }
+            });
 
-            // Hunt for the Grade column (e.g., "Final Mark", "Grade", "Total")
-            const gradeKey = keys.find(key => key.toLowerCase().includes('grade') || key.toLowerCase().includes('mark') || key.toLowerCase().includes('total'));
+            // 4. SORT THE COLUMNS ALPHABETICALLY! 
+            // This guarantees the hash remains deterministic even if the lecturer rearranges the Excel columns.
+            const sortedGrades = {};
+            Object.keys(extractedGrades).sort().forEach(sortedKey => {
+                sortedGrades[sortedKey] = extractedGrades[sortedKey];
+            });
 
             return {
                 candidateId: studentIdKey ? String(row[studentIdKey]) : "UNKNOWN",
-                finalGrade: gradeKey ? String(row[gradeKey]) : "UNKNOWN",
-                extractedAt: new Date().toISOString()
+                gradingData: sortedGrades
             };
         });
 
