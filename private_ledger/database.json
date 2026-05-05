@@ -296,5 +296,166 @@
         }
       }
     ]
+  },
+  {
+    "provenanceHash": "b3c92a1e3eff7f6ed7eecf22121480b87834d75b7cd8b2a96cfef29182aa4129",
+    "extractedAt": "2026-05-05T15:34:30.009Z",
+    "recordCount": 5,
+    "data": [
+      {
+        "candidateId": "IT22061348",
+        "gradingData": {
+          "Assignment 1": "50",
+          "Assignment 2": "50",
+          "Final Grade": "A+",
+          "Midterm": "85",
+          "Practical": "90"
+        }
+      },
+      {
+        "candidateId": "IT22111210",
+        "gradingData": {
+          "Assignment 1": "20",
+          "Assignment 2": "25",
+          "Final Grade": "A",
+          "Midterm": "80",
+          "Practical": "85"
+        }
+      },
+      {
+        "candidateId": "IT22206282",
+        "gradingData": {
+          "Assignment 1": "30",
+          "Assignment 2": "20",
+          "Final Grade": "B+",
+          "Midterm": "75",
+          "Practical": "70"
+        }
+      },
+      {
+        "candidateId": "IT22276346",
+        "gradingData": {
+          "Assignment 1": "22",
+          "Assignment 2": "20",
+          "Final Grade": "A-",
+          "Midterm": "78",
+          "Practical": "80"
+        }
+      },
+      {
+        "candidateId": "IT24000000",
+        "gradingData": {
+          "Assignment 1": "50",
+          "Assignment 2": "50",
+          "Final Grade": "C",
+          "Midterm": "60",
+          "Practical": "65"
+        }
+      }
+    ]
+  },
+  {
+    "provenanceHash": "b3c92a1e3eff7f6ed7eecf22121480b87834d75b7cd8b2a96cfef29182aa4129",
+    "extractedAt": "2026-05-05T15:34:45.986Z",
+    "recordCount": 5,
+    "data": [
+      {
+        "candidateId": "IT22061348",
+        "gradingData": {
+          "Assignment 1": "50",
+          "Assignment 2": "50",
+          "Final Grade": "A+",
+          "Midterm": "85",
+          "Practical": "90"
+        }
+      },
+      {
+        "candidateId": "IT22111210",
+        "gradingData": {
+          "Assignment 1": "20",
+          "Assignment 2": "25",
+          "Final Grade": "A",
+          "Midterm": "80",
+          "Practical": "85"
+        }
+      },
+      {
+        "candidateId": "IT22206282",
+        "gradingData": {
+          "Assignment 1": "30",
+          "Assignment 2": "20",
+          "Final Grade": "B+",
+          "Midterm": "75",
+          "Practical": "70"
+        }
+      },
+      {
+        "candidateId": "IT22276346",
+        "gradingData": {
+          "Assignment 1": "22",
+          "Assignment 2": "20",
+          "Final Grade": "A-",
+          "Midterm": "78",
+          "Practical": "80"
+        }
+      },
+      {
+        "candidateId": "IT24000000",
+        "gradingData": {
+          "Assignment 1": "50",
+          "Assignment 2": "50",
+          "Final Grade": "C",
+          "Midterm": "60",
+          "Practical": "65"
+        }
+      }
+    ]
+  },
+  {
+    "provenanceHash": "a3273e4fc181e46b8e9ca79213f826cf7c1d172646956e0e50833ace7c101525",
+    "extractedAt": "2026-05-05T15:34:56.875Z",
+    "recordCount": 5,
+    "data": [
+      {
+        "candidateId": "IT22061348",
+        "gradingData": {
+          "Final Grade": "A+",
+          "Midterm": "85",
+          "Practical": "90"
+        }
+      },
+      {
+        "candidateId": "IT22111210",
+        "gradingData": {
+          "Final Grade": "A",
+          "Midterm": "80",
+          "Practical": "85"
+        }
+      },
+      {
+        "candidateId": "IT22206282",
+        "gradingData": {
+          "Final Grade": "B+",
+          "Midterm": "75",
+          "Practical": "70"
+        }
+      },
+      {
+        "candidateId": "IT22276346",
+        "gradingData": {
+          "Final Grade": "A-",
+          "Midterm": "78",
+          "Practical": "80"
+        }
+      },
+      {
+        "candidateId": "IT24000000",
+        "gradingData": {
+          "Final Grade": "C",
+          "Midterm": "60",
+          "Practical": "65"
+        }
+      }
+    ]
   }
 ]
