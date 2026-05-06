@@ -33,6 +33,7 @@ const LecturerPortal = ({ user }) => {
         const formData = new FormData();
         formData.append('gradingSheet', selectedFile);
         formData.append('moduleCode', moduleCode);
+        formData.append('uploader', user.name);
 
         try {
             const response = await axios.post('http://localhost:5000/api/ingest', formData, {
@@ -109,7 +110,16 @@ const LecturerPortal = ({ user }) => {
                     </div>
                 )}
 
-                {uploadStatus === 'success' && receipt && (
+                {uploadStatus === 'success' && receipt && receipt.status === 'duplicate' && (
+                    <div className="alert warning" style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid var(--warning)', color: '#fcd34d', marginTop: '2rem' }}>
+                        <div>
+                            <strong style={{ display: 'block', fontSize: '1.1rem', marginBottom: '5px' }}>⚠️ Duplicate Payload Rejected</strong>
+                            This exact cryptographic hash has already been anchored to the ledger for <strong>{receipt.moduleCode}</strong>.
+                        </div>
+                    </div>
+                )}
+                {/* Standard Success Receipt for New Uploads */}
+                {uploadStatus === 'success' && receipt && receipt.status === 'new' && (
                     <div className="receipt-card">
                         <h3>✅ Cryptographically Secured</h3>
                         <p><strong>{receipt.recordCount} entries</strong> have been parsed, validated, and permanently sealed.</p>

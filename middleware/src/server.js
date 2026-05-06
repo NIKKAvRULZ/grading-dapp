@@ -32,6 +32,7 @@ app.post('/api/ingest', upload.single('gradingSheet'), async (req, res) => {
 
         // Grab the module code sent from the React frontend
         const moduleCode = req.body.moduleCode || "UNKNOWN_MODULE";
+        const uploaderName = req.body.uploader || "UNKNOWN_UPLOADER";
 
         // --- STAGE 2: HASHING ---
         console.log(`🔒 3. Generating SHA-256 Provenance Hash...`);
@@ -39,6 +40,7 @@ app.post('/api/ingest', upload.single('gradingSheet'), async (req, res) => {
 
         // Attach the module code to the payload BEFORE saving it to the ledger
         sealedRecord.moduleCode = moduleCode.toUpperCase();
+        sealedRecord.uploader = uploaderName;
 
         // --- STAGE 3: STORAGE & DUPLICATE PREVENTION ---
         console.log(`💾 4. Verifying Ledger Integrity...`);
@@ -57,6 +59,8 @@ app.post('/api/ingest', upload.single('gradingSheet'), async (req, res) => {
             return res.status(200).json({ 
                 message: 'Data already securely anchored in the Private Ledger.',
                 fileName: req.file.originalname,
+                moduleCode: sealedRecord.moduleCode,
+                uploader: sealedRecord.uploader,
                 recordCount: sealedRecord.recordCount,
                 provenanceHash: sealedRecord.provenanceHash,
                 status: 'duplicate'
@@ -72,6 +76,8 @@ app.post('/api/ingest', upload.single('gradingSheet'), async (req, res) => {
         res.status(200).json({ 
             message: 'Extraction and Hashing successful!',
             fileName: req.file.originalname,
+            moduleCode: sealedRecord.moduleCode,
+            uploader: sealedRecord.uploader,
             recordCount: sealedRecord.recordCount,
             provenanceHash: sealedRecord.provenanceHash,
             status: 'new'
@@ -100,6 +106,8 @@ app.get('/api/verify/:studentId', (req, res) => {
             const studentRecord = block.data.find(row => row.candidateId.toUpperCase() === studentId);
             if (studentRecord) {
                 foundRecords.push({
+                    moduleCode: block.moduleCode || "UNKNOWN_MODULE", 
+                    uploader: block.uploader || "System",
                     gradingData: studentRecord.gradingData,
                     provenanceHash: block.provenanceHash,
                     sealedAt: block.extractedAt

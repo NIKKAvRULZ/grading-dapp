@@ -78,6 +78,10 @@ const VerificationPortal = () => {
                 <small>Linked to Provenance Hash:</small>
                 <code>{record.provenanceHash}</code>
               </div>
+              <div style={{ marginTop: '15px', paddingTop: '15px', borderTop: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                <span>Sealed on: {new Date(record.sealedAt).toLocaleString()}</span>
+                <span>Verified Uploader: <strong style={{ color: 'var(--text-primary)' }}>{record.uploader}</strong></span>
+              </div>
             </div>
           ))}
         </div>
