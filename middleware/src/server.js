@@ -30,9 +30,15 @@ app.post('/api/ingest', upload.single('gradingSheet'), async (req, res) => {
         console.log(`⚙️  2. Extracting and standardizing schema...`);
         const standardizedJson = parseExcelToJson(req.file.buffer);
 
+        // Grab the module code sent from the React frontend
+        const moduleCode = req.body.moduleCode || "UNKNOWN_MODULE";
+
         // --- STAGE 2: HASHING ---
         console.log(`🔒 3. Generating SHA-256 Provenance Hash...`);
         const sealedRecord = generateProvenanceHash(standardizedJson);
+
+        // Attach the module code to the payload BEFORE saving it to the ledger
+        sealedRecord.moduleCode = moduleCode.toUpperCase();
 
         // --- STAGE 3: STORAGE & DUPLICATE PREVENTION ---
         console.log(`💾 4. Verifying Ledger Integrity...`);

@@ -3,10 +3,11 @@ import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import './LecturerPortal.css';
 
-const LecturerPortal = ({ user, onLogout }) => {
+const LecturerPortal = ({ user }) => {
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadStatus, setUploadStatus] = useState('');
     const [receipt, setReceipt] = useState(null);
+    const [moduleCode, setModuleCode] = useState('');
 
     const onDrop = useCallback((acceptedFiles) => {
         if (acceptedFiles && acceptedFiles.length > 0) {
@@ -31,6 +32,7 @@ const LecturerPortal = ({ user, onLogout }) => {
 
         const formData = new FormData();
         formData.append('gradingSheet', selectedFile);
+        formData.append('moduleCode', moduleCode);
 
         try {
             const response = await axios.post('http://localhost:5000/api/ingest', formData, {
@@ -38,6 +40,7 @@ const LecturerPortal = ({ user, onLogout }) => {
             });
             setUploadStatus('success');
             setReceipt(response.data);
+            setModuleCode(''); // Clear input on success
         } catch (error) {
             console.error('Upload failed:', error);
             setUploadStatus('error');
@@ -46,16 +49,7 @@ const LecturerPortal = ({ user, onLogout }) => {
 
     return (
         <div className="portal-wrapper">
-            <nav className="top-nav">
-                <div className="nav-logo">SLIIT Grading Oracle</div>
-                <div className="nav-user">
-                    <div className="user-info">
-                        <span className="user-name">{user.name}</span>
-                        <span className="user-role">{user.role} • {user.faculty}</span>
-                    </div>
-                    <button className="logout-btn" onClick={onLogout}>Logout</button>
-                </div>
-            </nav>
+            {/* NOTE: The <nav> bar was completely removed from here! App.jsx handles it now. */}
 
             <div className="portal-container">
                 <div className="portal-header">
@@ -83,17 +77,29 @@ const LecturerPortal = ({ user, onLogout }) => {
 
                 {selectedFile && (
                     <div className="file-details">
-                        <div className="file-info">
-                            <span className="file-icon">📄</span>
-                            <span className="file-name">{selectedFile.name}</span>
+                        <div className="file-info-header">
+                            <span className="file-icon" style={{ fontSize: '1.5rem' }}>📄</span>
+                            <span className="file-name" style={{ fontSize: '1.1rem' }}>{selectedFile.name}</span>
                         </div>
-                        <button
-                            className="upload-btn"
-                            onClick={handleUpload}
-                            disabled={uploadStatus === 'uploading'}
-                        >
-                            {uploadStatus === 'uploading' ? 'Sealing Data...' : 'Verify & Seal Record'}
-                        </button>
+
+                        {/* FIXED: Module Input & Button Layout */}
+                        <div className="upload-actions">
+                            <input 
+                                type="text" 
+                                placeholder="Enter Module Code (e.g. SE301)" 
+                                value={moduleCode}
+                                onChange={(e) => setModuleCode(e.target.value.toUpperCase())}
+                                required
+                                className="module-input"
+                            />
+                            <button 
+                                className="upload-btn" 
+                                onClick={handleUpload}
+                                disabled={uploadStatus === 'uploading' || !moduleCode.trim()}
+                            >
+                                {uploadStatus === 'uploading' ? 'Sealing...' : 'Verify & Ledger Upload'}
+                            </button>
+                        </div>
                     </div>
                 )}
 
@@ -106,7 +112,7 @@ const LecturerPortal = ({ user, onLogout }) => {
                 {uploadStatus === 'success' && receipt && (
                     <div className="receipt-card">
                         <h3>✅ Cryptographically Secured</h3>
-                        <p><strong>{receipt.recordCount} entries</strong> have been parsed, validated, and permanently sealed in the private ledger.</p>
+                        <p><strong>{receipt.recordCount} entries</strong> have been parsed, validated, and permanently sealed.</p>
                         <div className="hash-box">
                             <small>SHA-256 Provenance Hash</small>
                             <code>{receipt.provenanceHash}</code>
@@ -118,4 +124,4 @@ const LecturerPortal = ({ user, onLogout }) => {
     );
 };
 
-export default LecturerPortal;
+export default LecturerPortal;
