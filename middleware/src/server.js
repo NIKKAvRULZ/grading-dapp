@@ -34,32 +34,85 @@ app.post('/api/ingest', upload.single('gradingSheet'), async (req, res) => {
         console.log(`🔒 3. Generating SHA-256 Provenance Hash...`);
         const sealedRecord = generateProvenanceHash(standardizedJson);
 
-        // --- STAGE 3: STORAGE (Private Ledger) ---
-        console.log(`💾 4. Saving to Private Ledger...`);
-
+        // --- STAGE 3: STORAGE & DUPLICATE PREVENTION ---
+        console.log(`💾 4. Verifying Ledger Integrity...`);
+        
         // Read the existing ledger
         const rawLedger = fs.readFileSync(ledgerPath);
         const ledger = JSON.parse(rawLedger);
+        
+        // Check if this EXACT cryptographic hash already exists in the ledger
+        const isDuplicate = ledger.some(block => block.provenanceHash === sealedRecord.provenanceHash);
 
-        // Add the new sealed record
+        if (isDuplicate) {
+            console.log(`⚠️ Duplicate Payload Detected. Hash already exists in ledger. Skipped saving.`);
+            
+            // Return a 200 OK, but let the frontend know it was already in the system
+            return res.status(200).json({ 
+                message: 'Data already securely anchored in the Private Ledger.',
+                fileName: req.file.originalname,
+                recordCount: sealedRecord.recordCount,
+                provenanceHash: sealedRecord.provenanceHash,
+                status: 'duplicate'
+            });
+        }
+
+        // If it is NOT a duplicate, push it to the ledger and save
         ledger.push(sealedRecord);
-
-        // Save it back to the file
         fs.writeFileSync(ledgerPath, JSON.stringify(ledger, null, 2));
 
         console.log(`✅ Success! Provenance Hash: ${sealedRecord.provenanceHash}\n`);
 
-        // Send the real hash back to React!
-        res.status(200).json({
+        res.status(200).json({ 
             message: 'Extraction and Hashing successful!',
             fileName: req.file.originalname,
             recordCount: sealedRecord.recordCount,
-            provenanceHash: sealedRecord.provenanceHash
+            provenanceHash: sealedRecord.provenanceHash,
+            status: 'new'
         });
 
     } catch (error) {
         console.error('❌ Ingestion Error:', error);
         res.status(500).json({ error: 'Internal Server Error during ingestion' });
+    }
+});
+
+// API route for the employer Verification Portal 
+app.get('/api/verify/:studentId', (req, res) => {
+    try {
+        const studentId = req.params.studentId.toUpperCase();
+        console.log(`\n🔍 Verification Query received for Candidate: ${studentId}`);
+
+        // 1. Open the Private Ledger
+        const rawLedger = fs.readFileSync(ledgerPath);
+        const ledger = JSON.parse(rawLedger);
+
+        let foundRecords = [];
+
+        // 2. Search through all sealed ledger blocks
+        ledger.forEach(block => {
+            const studentRecord = block.data.find(row => row.candidateId.toUpperCase() === studentId);
+            if (studentRecord) {
+                foundRecords.push({
+                    gradingData: studentRecord.gradingData,
+                    provenanceHash: block.provenanceHash,
+                    sealedAt: block.extractedAt
+                });
+            }
+        });
+
+        // 3. Return the verified results
+        if (foundRecords.length > 0) {
+            console.log(`✅ Found ${foundRecords.length} verified records for ${studentId}`);
+            res.status(200).json({ success: true, records: foundRecords });
+        } else {
+            console.log(`❌ No records found for ${studentId}`);
+            res.status(404).json({ success: false, message: "No cryptographic records found." });
+        }
+
+    } catch (error) {
+        console.error('Search Error:', error);
+        res.status(500).json({ error: 'Internal Server Error during verification' });
     }
 });
 
